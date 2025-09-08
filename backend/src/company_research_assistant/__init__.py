@@ -1,0 +1,1 @@
+"""Company Research Assistant - AI-powered company research for job seekers."""
