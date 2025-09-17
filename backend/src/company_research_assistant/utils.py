@@ -19,7 +19,7 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool, InjectedToolArg
 from tavily import TavilyClient
 
-from company_research_assistant.state_research import Summary
+from company_research_assistant.company_research_state import Summary
 from company_research_assistant.prompts import summarize_webpage_prompt
 
 # ===== UTILITY FUNCTIONS =====
@@ -184,7 +184,7 @@ def format_search_output(summarized_results: dict) -> str:
 @tool(parse_docstring=True)
 def tavily_search(
     query: str,
-    max_results: Annotated[int, InjectedToolArg] = 3,
+    max_results: Annotated[int, InjectedToolArg] = 5,  # Increased from 3 to 5
     topic: Annotated[Literal["general", "news", "finance"], InjectedToolArg] = "general",
 ) -> str:
     """Fetch results from Tavily search API with content summarization.
@@ -212,6 +212,43 @@ def tavily_search(
     summarized_results = process_search_results(unique_results)
 
     # Format output for consumption
+    return format_search_output(summarized_results)
+
+@tool(parse_docstring=True)
+def tavily_search_company_values(
+    company_name: str,
+    max_results: Annotated[int, InjectedToolArg] = 5,
+) -> str:
+    """Search specifically for company values, mission statements, and core principles.
+    
+    This specialized search function targets official company content about values,
+    mission statements, and core principles that might be missed by general searches.
+    
+    Args:
+        company_name: The name of the company to research
+        max_results: Maximum number of results to return
+    """
+    # Create targeted queries for company values
+    value_queries = [
+        f'"{company_name}" core values',
+        f'"{company_name}" mission statement',
+        f'"{company_name}" company values blog',
+        f'"{company_name}" principles culture',
+        f'"{company_name}" official values'
+    ]
+    
+    # Execute searches for company values
+    search_results = tavily_search_multiple(
+        value_queries,
+        max_results=max_results,
+        topic="general",
+        include_raw_content=True,
+    )
+    
+    # Deduplicate and process results
+    unique_results = deduplicate_search_results(search_results)
+    summarized_results = process_search_results(unique_results)
+    
     return format_search_output(summarized_results)
 
 @tool(parse_docstring=True)

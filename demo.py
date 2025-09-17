@@ -101,7 +101,7 @@ def display_startup_instructions():
     
     print("\n📚 ADDITIONAL RESOURCES:")
     print("   - API Documentation: http://localhost:8000/docs")
-    print("   - Frontend README: README_FRONTEND.md")
+    print("   - Project README: README.md")
     print("   - Original Research Project: backend/")
     
     print("\n⚡ FEATURES:")

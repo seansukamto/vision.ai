@@ -11,14 +11,14 @@ from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage, filter_messages
 from langchain.chat_models import init_chat_model
 
-from company_research_assistant.state_research import ResearcherState, ResearcherOutputState
-from company_research_assistant.utils import tavily_search, get_today_str, think_tool
+from company_research_assistant.company_research_state import ResearcherState, ResearcherOutputState
+from company_research_assistant.utils import tavily_search, tavily_search_company_values, get_today_str, think_tool
 from company_research_assistant.prompts import culture_research_agent_prompt, compress_research_system_prompt, compress_research_human_message
 
 # ===== CONFIGURATION =====
 
 # Set up tools and model binding
-tools = [tavily_search, think_tool]
+tools = [tavily_search, tavily_search_company_values, think_tool]
 tools_by_name = {tool.name: tool for tool in tools}
 
 # Initialize models

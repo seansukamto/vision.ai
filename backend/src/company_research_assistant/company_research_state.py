@@ -86,3 +86,42 @@ class CompanyResearchPlan(BaseModel):
         description="Additional research considerations based on job description",
         default_factory=list
     )
+
+# ===== RESEARCH AGENT STATES =====
+
+class ResearcherState(TypedDict):
+    """
+    State for individual research agents (past, future, culture).
+    
+    Used by specialized research agents to manage their research process,
+    including conversation history and research topic context.
+    """
+    
+    # Research context
+    research_topic: str
+    
+    # Conversation management for the research agent
+    researcher_messages: Annotated[Sequence[BaseMessage], add_messages]
+
+class ResearcherOutputState(TypedDict):
+    """
+    Output state for individual research agents.
+    
+    Contains the compressed research findings and raw notes from
+    the research agent's work.
+    """
+    
+    # Research results
+    compressed_research: str
+    raw_notes: list[str]
+
+class Summary(BaseModel):
+    """Schema for webpage content summarization."""
+    
+    summary: str = Field(
+        description="Concise summary of the webpage content"
+    )
+    key_excerpts: list[str] = Field(
+        description="Important quotes or excerpts from the webpage",
+        default_factory=list
+    )
